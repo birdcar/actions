@@ -1,0 +1,45 @@
+name: "Deploy to Heroku"
+author: "Nick Cannariato <devrel@birdcar.dev>"
+description: "An action to enable customized deployment to Heroku using GitHub actions"
+
+inputs:
+  herokuUsername:
+    required: true
+    description: "The Heroku username of the bot account used for automatic Heroku deploys"
+  herokuAPIKey:
+    required: true
+    description: "The API Key associated with the bot account used for automatic Heroku deploys"
+  herokuAppName:
+    required: true
+    description: "The specific name of the Heroku app you're deploying"
+  herokuAppHeartbeatUrl:
+    required: true
+    description: "The url you'd like curl to check for a 200 response to verify the deploy is successful"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout full git repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0   # 0 means the whole history
+
+    - name: Set Heroku CLI login credentials
+      shell: bash
+      run: bin/set_heroku_auth
+      env:
+        HEROKU_BOT_USER: ${{ inputs.herokuUsername }}
+        HEROKU_BOT_KEY: ${{ inputes.herokuAPIKey }}
+    
+    - name: Add Heroku remote
+      shell: bash
+      run: heroku git:remote --remote heroku --app $HEROKU_APP_NAME
+      env:
+        HEROKU_APP_NAME: ${{ inputs.herokuAppName }}
+    
+    - name: Deploy ${{ inputs.herokuAppName }}
+      shell: bash
+      run: bin/heroku_deploy
+      env:
+        HEARTBEAT_URL: ${{ inputs.herokuAppHeartbeatUrl }}
+

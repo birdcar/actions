@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+set -e -o errexit -o nounset -o pipefail
+
+git remote
+git fetch heroku staging
+
+if [ -z "$GITHUB_SHA" ]; then
+  echo "GITHUB_SHA empty, but it shouldn't be!"
+  exit 1
+fi
+
+git push -f heroku "${GITHUB_SHA}:master"
+curl -f "$HEARTBEAT_URL"
