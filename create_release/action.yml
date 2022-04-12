@@ -1,0 +1,18 @@
+
+name: "Create Release"
+author: "Nick Cannariato <devrel@birdcar.dev>"
+description: "Automatically creates a release from a new Tag on GitHub, including changelog notes"
+
+inputs:
+  changelogPath:
+    required: false
+    description: "Relative path to the Changelog file to parse, defaults to a file named CHANGELOG.md in the root of the repository."
+    default: "CHANGELOG.md"
+  timezone:
+    required: false
+    description: An optional Olsen database timezone, defaults to UTC.
+    default: 'Etc/UTC'
+
+runs:
+  using: "node16"
+  main: 'dist/index.js'
