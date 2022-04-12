@@ -1,5 +1,5 @@
 const fs = require('fs/promises');
-
+const util = require('util');
 const core = require('@actions/core');
 const github = require('@actions/github');
 const { parser } = require('keep-a-changelog');
@@ -12,12 +12,17 @@ async function run() {
     timezone: core.getInput('timezone')
   });
   const { owner, repo } = github.context.repo;
+  core.debug(`context: ${JSON.stringify(github.context, null, 2)}`);
   const changelog = parser(await fs.readFile(changelogPath, 'utf8'));
   const tag_name = process.env.GITHUB_REF.replace(/^refs\/tags\/v/, '');
+  core.debug(`Found tag_name: ${util.inspect(tag_name)}`);
 
   for (let rel of changelog.releases) {
     // Only create from the release that matches the tag
-    if (rel.version.raw !== tag_name) {
+    core.debug(`rel.version.raw: ${util.inspect(rel.version.raw)}`);
+    if (rel.version.raw.trim() != tag_name.trim()) {
+      core.debug(`Skipping release: ${rel.version.raw}`);
+      core.debug(`${util.inspect(rel.version.raw)} != ${util.inspect(tag_name)}`);
       continue;
     }
 
@@ -25,14 +30,14 @@ async function run() {
     const body = rel.toString().split('\n').slice(1).join('\n');
 
     // Create the release
-    await octokit.rest.repos.createRelease({
+    const res = await octokit.rest.repos.createRelease({
       owner,
       repo,
       tag_name,
-      name: `v${tag}`,
+      name: `v${tag_name}`,
       body
     }).catch(core.error);
-
+    core.debug(`createRelease: ${JSON.stringify(res.data, null, 2)}`);
     core.success(`Created release ${tag_name}`);
   }
 
