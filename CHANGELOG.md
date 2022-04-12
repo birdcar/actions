@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.0 - 2022-04-12
+
+Another day, another release of birdcar/actions.
+
+### Added
+- **New Action**: `poetry_install`. Poetry is a way of managing python packages, and this action automate the setup and caching of Python, Poetry, and the dependencies specified in your `poetry.lock` file. 
+- **New Action**: `poetry_export`. A significant amount of both my side projects and the internal tools I develop professionally are deployed on Heroku. At the moment, Heroku requires all Python projects to have a `requirements.txt` file in the root of the project repository for dependencies to be installed (though that looks to be changing with their move to CloudNativeBuildpacks in the near term future 🤞🏽). This action will use Poetry to generate the `requirements.txt` file for you, and then commit it to the repository to ensure that you don't need to manage it.
+
+### Changed
+- **Updated Action**: `deploy_to_heroku`. Initially, the `deploy_to_heroku` action would also checkout the repository for you. This is actually not great for composing actions together; resulting in either duplicate work (i.e. checking the repository out twice) or odd environmental changes. This update will remove the checkout step and leave that up to the consumer.
+
+### Removed
+- **Deleted Action**: `setup_poetry`. As it turns out, the `actions/setup-python` action has built in dependency caching! It needs to be composed with a few other steps to be useful, but the bulk of the work in the `setup_poetry` was manually performing that caching step, so it's no longer needed. Use `poetry_install` moving forward, and see the readme in that directory for usage instructions.
+
 ## 0.1.0 - 2022-04-11
 
 First release of my personal actions repository. Read the [Added](#added) section to see the list of actions available in this release, along with a short description. For more information, see the README in each of the action folders.
