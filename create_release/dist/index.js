@@ -10725,6 +10725,7 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const fs = __nccwpck_require__(3292);
+const util = __nccwpck_require__(3837);
 
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
@@ -10738,12 +10739,17 @@ async function run() {
     timezone: core.getInput('timezone')
   });
   const { owner, repo } = github.context.repo;
+  core.debug(`context: ${JSON.stringify(github.context, null, 2)}`);
+  
   const changelog = parser(await fs.readFile(changelogPath, 'utf8'));
   const tag_name = process.env.GITHUB_REF.replace(/^refs\/tags\/v/, '');
+  core.debug(`Found tag_name: ${util.inspect(tag_name)}`);
 
   for (let rel of changelog.releases) {
     // Only create from the release that matches the tag
-    if (rel.version.raw !== tag_name) {
+    core.debug(`rel.version.raw: ${util.inspect(rel.version.raw)}`);
+    if (rel.version.raw.trim() != tag_name.trim()) {
+      core.debug(`Skipping release: ${rel.version.raw} -> ${util.inspect(rel.version.raw)} != ${util.inspect(tag_name)}`);
       continue;
     }
 
@@ -10751,17 +10757,15 @@ async function run() {
     const body = rel.toString().split('\n').slice(1).join('\n');
 
     // Create the release
-    await octokit.rest.repos.createRelease({
+    const res = await octokit.rest.repos.createRelease({
       owner,
       repo,
       tag_name,
-      name: `v${tag}`,
+      name: `v${tag_name}`,
       body
     }).catch(core.error);
-
-    core.success(`Created release ${tag_name}`);
+    core.debug(`created release! -> ${JSON.stringify(res.data, null, 2)}`);
   }
-
 }
 
 run()
