@@ -28,7 +28,7 @@ jobs:
       - name: "Checkout repository"
         uses: actions/checkout@v3
       - name: "Create release from new SemVer tag"
-        uses: birdcar/actions/create_release@main
+        uses: birdcar/actions/create_release@v0.1.0
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           timezone: 'America/Chicago'
