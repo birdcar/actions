@@ -19,11 +19,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout full git repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0   # 0 means the whole history
-
     - name: Set Heroku CLI login credentials
       shell: bash
       run: bin/set_heroku_auth
