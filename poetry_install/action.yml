@@ -1,0 +1,40 @@
+
+name: "Poetry install"
+author: "Nick Cannariato<devrel@birdcar.dev>"
+description: "Setup a Python project that uses Poetry"
+
+inputs:
+  pythonVersion:
+    required: false
+    description: "The specific Python version you'd like to use (defaults to latest version available on Heroku)"
+    default: "3.10.3"
+  poetryDev:
+    required: false
+    description: "Whether or not to install dev dependencies (defaults to 'yes')"
+    default: "true"
+  poetryRoot:
+    required: false
+    description: "Whether or not to install the root package (defaults to 'true')"
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+  - name: Install poetry
+    shell: bash
+    run: pipx install poetry
+  - uses: actions/setup-python@v3
+    with:
+      python-version: ${{ inputs.pythonVersion }}
+      cache: 'poetry'
+  - name: Configure Poetry
+    shell: bash
+    run: poetry env $PYTHON_VERSION
+    env:
+      PYTHON_VERSION: ${{ steps.setup-python.outputs.python-version }}
+  - name: Install dependencies
+    shell: bash
+    run: poetry install $POETRY_DEV $POETRY_ROOT
+    env:
+      POETRY_DEV: ${{ (inputs.poetryDev == 'true' && '') || '--no-dev' }}
+      POETRY_ROOT: ${{ (inputs.poetryRoot == 'true' && '') || '--no-root' }}
