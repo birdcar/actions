@@ -1,0 +1,35 @@
+
+name: "Poetry Export"
+author: "Nick Cannariato <devrel@birdcar.dev>"
+description: "Automatically generate a `requirements.txt` file based on your `poetry.lock` file for use with PaaS like Heroku"
+
+inputs:
+  gitUser:
+    required: true
+    description: "The user.name value you'd like to pass to Git to commit with"
+  gitEmail:
+    required: true
+    description: "The user.email value you'd like to pass to Git to commit with"
+
+runs:
+  using: composite
+  steps:
+    - name: Install Poetry, Python, and dependencies
+      uses: birdcar/actions/poetry_install@v0.2.0
+      with:
+        poetryDev: 'false'
+        poetryRoot: 'false'
+    - name: Generate requirements.txt file
+      shell: bash
+      run: poetry export -f requirements.txt -o requirements.txt
+    - name: Push the new requirements.txt file to the repository
+      shell: bash
+      run: |
+        git config user.name "$GIT_USER_NAME"
+        git config user.email "$GIT_USER_EMAIL"
+        git add .
+        git commit -m "(BOT) Generated new requirements.txt"
+        git push
+      env:
+        GIT_USER_NAME: ${{ inputs.gitUser }}
+        GIT_USER_EMAIL: ${{ inputs.gitEmail }}
