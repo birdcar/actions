@@ -29,7 +29,7 @@ runs:
       cache: 'poetry'
   - name: Configure Poetry
     shell: bash
-    run: poetry env $PYTHON_VERSION
+    run: poetry env use $PYTHON_VERSION
     env:
       PYTHON_VERSION: ${{ inputs.pythonVersion }}
   - name: Install dependencies
