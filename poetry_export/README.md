@@ -15,7 +15,7 @@ on:
   push:
     branches:
       - main
-    pathspec:
+    paths:
       - poetry.lock
 jobs:
   generate_requirements_file:
@@ -23,8 +23,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      - name: Install Python and Poetry
+        uses: birdcar/actions/poetry_install@v0.2.1
+      - name: Install Production dependencies
+        shell: bash
+        runs: poetry install --no-dev -E prod
       - name: Generate Requirements file with Poetry
-        uses: birdcar/actions/poetry_export@v0.2.0
+        uses: birdcar/actions/poetry_export@v0.2.1
         with:
           gitUser: 'Birdcar (BOT)'
           gitEmail: '434063+birdcar@users.noreply.github.com'

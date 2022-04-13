@@ -14,11 +14,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install Poetry, Python, and dependencies
-      uses: birdcar/actions/poetry_install@v0.2.0
-      with:
-        poetryDev: 'false'
-        poetryRoot: 'false'
     - name: Generate requirements.txt file
       shell: bash
       run: poetry export -f requirements.txt -o requirements.txt

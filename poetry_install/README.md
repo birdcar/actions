@@ -6,8 +6,6 @@
 ## Inputs
 
 - `pythonVersion` (optional): The specific Python version you'd like to use (defaults to latest version available on Heroku)
-- `poetryDev` (optional): Whether or not to install dev dependencies (defaults to 'true', must be a string due to GitHub Actions limitations)
-- `poetryRoot` (optional): Whether or not to install the root package (defaults to 'true', must be a string due to GitHub Actions limitations)
 
 ## Example Usage
 
@@ -19,9 +17,8 @@ runs:
   steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Install Poetry and cache production dependencies
+    - name: Install Python and Poetry
       uses: birdcar/actions/poetry_install@v0.2.0
       with:
-        poetryDev: 'false'
-        poetryRoot: 'false'
+        pythonVersion: 3.9.9
 ```
