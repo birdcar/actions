@@ -10,7 +10,7 @@ inputs:
     default: "3.10.3"
   poetryDev:
     required: false
-    description: "Whether or not to install dev dependencies (defaults to 'yes')"
+    description: "Whether or not to install dev dependencies (defaults to 'true')"
     default: "true"
   poetryRoot:
     required: false
@@ -36,5 +36,5 @@ runs:
     shell: bash
     run: poetry install $POETRY_DEV $POETRY_ROOT
     env:
-      POETRY_DEV: ${{ (inputs.poetryDev == 'true' && '') || '--no-dev' }}
-      POETRY_ROOT: ${{ (inputs.poetryRoot == 'true' && '') || '--no-root' }}
+      POETRY_DEV: ${{ (inputs.poetryDev != 'true' && '') || '--no-dev' }}
+      POETRY_ROOT: ${{ (inputs.poetryRoot != 'true' && '') || '--no-root' }}
