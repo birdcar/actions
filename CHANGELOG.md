@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.1 - 2022-04-13
+
+Some days, you realize that you wrote a bunch of stuff and never tested it. This is one of those days.
+
+### Changed
+
+- **Bugfix** The `poetry_install` action failed to set the poetry env correctly, resulting in an inability to then use that env for commands later. The reason for this is that I was relying on the output from the `setup-python` step to set the poetry envrionment version. However, I've now shifted to just using the same input value that `setup-python` is relying on, making it simpler and less likely to fail (I hope).
+
 ## 0.2.0 - 2022-04-12
 
 Another day, another release of birdcar/actions.
