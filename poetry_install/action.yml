@@ -31,7 +31,7 @@ runs:
     shell: bash
     run: poetry env $PYTHON_VERSION
     env:
-      PYTHON_VERSION: ${{ steps.setup-python.outputs.python-version }}
+      PYTHON_VERSION: ${{ inputs.pythonVersion }}
   - name: Install dependencies
     shell: bash
     run: poetry install $POETRY_DEV $POETRY_ROOT
