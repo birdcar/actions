@@ -11,7 +11,9 @@ Some days, you realize that you wrote a bunch of stuff and never tested it. This
 
 ### Changed
 
-- **Bugfix** The `poetry_install` action failed to set the poetry env correctly, resulting in an inability to then use that env for commands later. The reason for this is that I was relying on the output from the `setup-python` step to set the poetry envrionment version. However, I've now shifted to just using the same input value that `setup-python` is relying on, making it simpler and less likely to fail (I hope).
+- **Bugfix**: The `poetry_install` action failed to set the poetry env correctly, resulting in an inability to then use that env for commands later. The reason for this is that I was relying on the output from the `setup-python` step to set the poetry envrionment version. However, I've now shifted to just using the same input value that `setup-python` is relying on, making it simpler and less likely to fail (I hope).
+- **Updated Action**: `poetry_install` will now _only_ install and configure Python and Poetry, but will not take the extra step of installing the dependencies itself.
+- **Updated Action**: `poetry_export` once leveraged `poetry_install` as its first step to simplify production deployments to SaaS but combining the install of production dependencies with the requirements.txt output, but that turns out to not be necessary since `poetry export` outputs the production requirements without needing additional configuration. Right now I'm not going to support the `extras` flag which adds value to this action, but I may consider doing that in the future
 
 ## 0.2.0 - 2022-04-12
 
