@@ -1,0 +1,8 @@
+on: push
+
+jobs:
+  hello_world:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Sanity check action creator"
+        uses: birdcar/actions/hello_world@main
