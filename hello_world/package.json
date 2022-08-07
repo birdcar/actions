@@ -3,7 +3,7 @@
   "author": "Birdcar <434063+birdcar@users.noreply.github.com>",
   "version": "0.1.0",
   "description": "The hello_world action",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint '**/*.{ts,js}'",
     "prepare": "ncc build -o dist --source-map --license licenses.txt",
