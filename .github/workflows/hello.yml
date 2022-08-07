@@ -6,3 +6,5 @@ jobs:
     steps:
       - name: "Sanity check action creator"
         uses: birdcar/actions/hello_world@main
+        with:
+          who-to-greet: "Nick"
