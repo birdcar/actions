@@ -10724,37 +10724,37 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const fs = __nccwpck_require__(3292);
-const util = __nccwpck_require__(3837);
+const fs = __nccwpck_require__(3292)
+const util = __nccwpck_require__(3837)
 
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-const { parser } = __nccwpck_require__(1812);
+const core = __nccwpck_require__(2186)
+const github = __nccwpck_require__(5438)
+const { parser } = __nccwpck_require__(1812)
 
-async function run() {
-  const ghToken = core.getInput('githubToken', { required: true });
-  const changelogPath = core.getInput('changelogPath', { required: true });
+async function run () {
+  const ghToken = core.getInput('githubToken', { required: true })
+  const changelogPath = core.getInput('changelogPath', { required: true })
   const octokit = github.getOctokit(ghToken, {
     userAgent: '@birdcar/actions/create_release',
     timezone: core.getInput('timezone')
-  });
-  const { owner, repo } = github.context.repo;
-  core.debug(`context: ${JSON.stringify(github.context, null, 2)}`);
-  
-  const changelog = parser(await fs.readFile(changelogPath, 'utf8'));
-  const tag_name = process.env.GITHUB_REF.replace(/^refs\/tags\/v/, '');
-  core.debug(`Found tag_name: ${util.inspect(tag_name)}`);
+  })
+  const { owner, repo } = github.context.repo
+  core.debug(`context: ${JSON.stringify(github.context, null, 2)}`)
 
-  for (let rel of changelog.releases) {
+  const changelog = parser(await fs.readFile(changelogPath, 'utf8'))
+  const tag_name = process.env.GITHUB_REF.replace(/^refs\/tags\/v/, '')
+  core.debug(`Found tag_name: ${util.inspect(tag_name)}`)
+
+  for (const rel of changelog.releases) {
     // Only create from the release that matches the tag
-    core.debug(`rel.version.raw: ${util.inspect(rel.version.raw)}`);
+    core.debug(`rel.version.raw: ${util.inspect(rel.version.raw)}`)
     if (rel.version.raw.trim() != tag_name.trim()) {
-      core.debug(`Skipping release: ${rel.version.raw} -> ${util.inspect(rel.version.raw)} != ${util.inspect(tag_name)}`);
-      continue;
+      core.debug(`Skipping release: ${rel.version.raw} -> ${util.inspect(rel.version.raw)} != ${util.inspect(tag_name)}`)
+      continue
     }
 
     // Remove the first line of the release notes (it matches the title)
-    const body = rel.toString().split('\n').slice(1).join('\n');
+    const body = rel.toString().split('\n').slice(1).join('\n')
 
     // Create the release
     const res = await octokit.rest.repos.createRelease({
@@ -10762,13 +10762,16 @@ async function run() {
       repo,
       tag_name,
       name: `v${tag_name}`,
+      draft: false,
+      prerelease: Boolean(tag_name.match('alpha')),
       body
-    }).catch(core.error);
-    core.debug(`created release! -> ${JSON.stringify(res.data, null, 2)}`);
+    }).catch(core.error)
+    core.debug(`created release! -> ${JSON.stringify(res.data, null, 2)}`)
   }
 }
 
 run()
+
 })();
 
 module.exports = __webpack_exports__;
