@@ -10742,7 +10742,7 @@ async function run () {
   core.debug(`context: ${JSON.stringify(github.context, null, 2)}`)
 
   const changelog = parser(await fs.readFile(changelogPath, 'utf8'))
-  const tag_name = process.env.GITHUB_REF.replace(/^refs\/tags\/v/, '')
+  const tag_name = process.env.GITHUB_REF.replace(/^refs\/tags\//, '')
   core.debug(`Found tag_name: ${util.inspect(tag_name)}`)
 
   for (const rel of changelog.releases) {
@@ -10756,15 +10756,19 @@ async function run () {
     // Remove the first line of the release notes (it matches the title)
     const body = rel.toString().split('\n').slice(1).join('\n')
 
+    // Figure out if the semver is a prerelease (so the consumer can automate prereleases differently if they want)
+    const isPrerelease = Boolean(tag_name.match(/v\d.\d.\d-\w*.\d/))
+
     // Create the release
     const res = await octokit.rest.repos.createRelease({
       owner,
       repo,
+      body,
       tag_name,
-      name: `v${tag_name}`,
+      name: tag_name,
       draft: false,
-      prerelease: Boolean(tag_name.match('alpha')),
-      body
+      prerelease: isPrerelease,
+      make_latest: isPrerelease,
     }).catch(core.error)
     core.debug(`created release! -> ${JSON.stringify(res.data, null, 2)}`)
   }

@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.2.1 - 2022-04-13
+## [v0.3.0] - 2022-12-18
+
+A quick change to the `create_release` function to ensure that it supports prereleases automagically. This will allow you to specify a tag like `v0.3.1-alpha.1` and have that create a GitHub Prerelease, which you can have different actions for if you prefer.
+
+### Changed
+
+- Updated the `create_release` action to support prereleases based on NPMs semver spec.
+
+## [0.2.1] - 2022-04-13
 
 Some days, you realize that you wrote a bunch of stuff and never tested it. This is one of those days.
 
@@ -15,12 +23,12 @@ Some days, you realize that you wrote a bunch of stuff and never tested it. This
 - **Updated Action**: `poetry_install` will now _only_ install and configure Python and Poetry, but will not take the extra step of installing the dependencies itself.
 - **Updated Action**: `poetry_export` once leveraged `poetry_install` as its first step to simplify production deployments to SaaS but combining the install of production dependencies with the requirements.txt output, but that turns out to not be necessary since `poetry export` outputs the production requirements without needing additional configuration. Right now I'm not going to support the `extras` flag which adds value to this action, but I may consider doing that in the future
 
-## 0.2.0 - 2022-04-12
+## [0.2.0] - 2022-04-12
 
 Another day, another release of birdcar/actions.
 
 ### Added
-- **New Action**: `poetry_install`. Poetry is a way of managing python packages, and this action automate the setup and caching of Python, Poetry, and the dependencies specified in your `poetry.lock` file. 
+- **New Action**: `poetry_install`. Poetry is a way of managing python packages, and this action automate the setup and caching of Python, Poetry, and the dependencies specified in your `poetry.lock` file.
 - **New Action**: `poetry_export`. A significant amount of both my side projects and the internal tools I develop professionally are deployed on Heroku. At the moment, Heroku requires all Python projects to have a `requirements.txt` file in the root of the project repository for dependencies to be installed (though that looks to be changing with their move to CloudNativeBuildpacks in the near term future 🤞🏽). This action will use Poetry to generate the `requirements.txt` file for you, and then commit it to the repository to ensure that you don't need to manage it.
 
 ### Changed
@@ -29,7 +37,7 @@ Another day, another release of birdcar/actions.
 ### Removed
 - **Deleted Action**: `setup_poetry`. As it turns out, the `actions/setup-python` action has built in dependency caching! It needs to be composed with a few other steps to be useful, but the bulk of the work in the `setup_poetry` was manually performing that caching step, so it's no longer needed. Use `poetry_install` moving forward, and see the readme in that directory for usage instructions.
 
-## 0.1.0 - 2022-04-11
+## [0.1.0] - 2022-04-11
 
 First release of my personal actions repository. Read the [Added](#added) section to see the list of actions available in this release, along with a short description. For more information, see the README in each of the action folders.
 
