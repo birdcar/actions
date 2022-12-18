@@ -30,9 +30,6 @@ async function run () {
     // Remove the first line of the release notes (it matches the title)
     const body = rel.toString().split('\n').slice(1).join('\n')
 
-    // Figure out if the semver is a prerelease (so the consumer can automate prereleases differently if they want)
-    const isPrerelease = Boolean(tag_name.match(/v\d.\d.\d-\w*.\d/))
-
     // Create the release
     const res = await octokit.rest.repos.createRelease({
       owner,
@@ -41,8 +38,7 @@ async function run () {
       tag_name,
       name: tag_name,
       draft: false,
-      prerelease: isPrerelease,
-      make_latest: isPrerelease,
+      prerelease: Boolean(tag_name.match(/v\d.\d.\d-\w*.\d/)),
     }).catch(core.error)
     core.debug(`created release! -> ${JSON.stringify(res.data, null, 2)}`)
   }

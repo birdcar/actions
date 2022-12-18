@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.3.1] - 2022-12-18
+
+Ran into a snag with the previous release related to a difference between the octokit API and the releases REST API.
+
+### Fixed
+
+- Previously I attempted to create a release with `make_latest`, however it appears that Octokit's createRelease method doesn't currently support that. I'm going to leave it alone for now.
+
 ## [v0.3.0] - 2022-12-18
 
 A quick change to the `create_release` function to ensure that it supports prereleases automagically. This will allow you to specify a tag like `v0.3.1-alpha.1` and have that create a GitHub Prerelease, which you can have different actions for if you prefer.
