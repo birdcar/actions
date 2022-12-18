@@ -3,12 +3,17 @@
   "version": "0.3.1",
   "description": "A personal actions repository",
   "scripts": {
-    "new": "quick create"
+    "new": "quick create",
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run all --workspaces --if-present"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@birdcar/quick": "^0.2.0"
-  }
+  },
+  "workspaces": [
+    "dev/create_release"
+  ]
 }
