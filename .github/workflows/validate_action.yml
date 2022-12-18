@@ -1,9 +1,0 @@
-on:
-  push
-
-jobs:
-  log_context:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Log provided context data"
-        uses: birdcar/actions/markdownify@main
