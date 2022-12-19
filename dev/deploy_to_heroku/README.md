@@ -14,7 +14,7 @@ An action to deploy apps to Heroku from GitHub (i.e. not with Heroku's default)
 ```yaml
 steps:
   - name: Deploy staging to Heroku
-    uses: birdcar/actions/deploy_to_heroku@v0.1.0
+    uses: birdcar/actions/deploy_to_heroku@v0.4.0
     with:
       herokuUsername: ${{ secrets.HEROKU_USERNAME }}
       herokuAPIKey: ${{ secrets.HEROKU_API_KEY }}

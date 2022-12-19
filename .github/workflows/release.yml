@@ -6,11 +6,13 @@ on:
 jobs:
   create_release_from_new_tag:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v3
       - name: "Create release from new SemVer tag"
-        uses: birdcar/actions/create_release@main
+        uses: birdcar/actions/dev/create_release@main
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           timezone: 'America/Chicago'

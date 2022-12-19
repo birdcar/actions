@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.4.0] - 2022-12-18
+
+NPM workspaces exist now, which means we can make working with this monorepo of GitHub actions much less unweildy. The problem with that is that the folder structure is different, so those who want to update to the latest version of the previous set of actions will need to update the path in their `uses` declaration.
+
+### Changed
+
+- **Breaking change**. Moved folders for all existing actions into the `dev` directory to allow for better monorepo organization by topic. Consumers will need to update their yaml files.
+
 ## [v0.3.1] - 2022-12-18
 
 Ran into a snag with the previous release related to a difference between the octokit API and the releases REST API.

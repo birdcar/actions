@@ -18,7 +18,7 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Install Python and Poetry
-      uses: birdcar/actions/poetry_install@v0.2.0
+      uses: birdcar/actions/dev/poetry_install@v0.4.0
       with:
         pythonVersion: 3.9.9
 ```

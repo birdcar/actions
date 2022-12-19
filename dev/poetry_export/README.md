@@ -24,9 +24,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - name: Install Python and Poetry
-        uses: birdcar/actions/poetry_install@v0.2.1
+        uses: birdcar/actions/dev/poetry_install@v0.4.0
       - name: Generate Requirements file with Poetry
-        uses: birdcar/actions/poetry_export@v0.2.1
+        uses: birdcar/actions/poetry_export@v0.4.0
         with:
           gitUser: 'Birdcar (BOT)'
           gitEmail: '434063+birdcar@users.noreply.github.com'
