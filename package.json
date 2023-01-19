@@ -11,7 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@birdcar/quick": "^0.2.0"
+    "@birdcar/quick": "^0.2.0",
+    "typescript": "^4.9.4"
   },
   "workspaces": [
     "dev/create_release"
