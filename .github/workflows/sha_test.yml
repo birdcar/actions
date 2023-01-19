@@ -1,0 +1,9 @@
+on:
+  push
+
+jobs:
+  get_sha:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Sha
+        run: echo {{ github.sha }}
