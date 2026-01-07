@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.5.0] - 2026-01-07
+
+Major architecture overhaul: migrated from npm workspaces to Bun workspaces with a completely new build system.
+
+### Changed
+
+- **Breaking change**: Actions moved from `dev/` to `actions/` directory. Update your workflow files to use `birdcar/actions/actions/create-release@main` (or the new tag once released).
+- **Breaking change**: `create_release` renamed to `create-release` (kebab-case).
+- Migrated build system from `@vercel/ncc` to Bun's native bundler.
+- Upgraded all dependencies to latest versions.
+- Migrated from ESLint to Biome for linting and formatting.
+- Actions now target Node 20 (previously Node 16).
+
+### Added
+
+- `bun run new <name>` - Generator script to scaffold new actions.
+- `bun run build` - Build script that compiles all actions.
+- `bun run build --compile` - Cross-compile actions to native executables.
+- `bun run build --watch` - Watch mode for development.
+- CI workflow to validate builds on PRs.
+- Shared utilities in `shared/action-utils.ts`.
+- TypeScript support throughout.
+
+### Removed
+
+- Removed `@birdcar/quick` dependency.
+- Removed ESLint configuration.
+
+### Migrated
+
+- `deploy_to_heroku` → `deploy-to-heroku`: Now a TypeScript action with improved error handling and optional heartbeat check.
+- `poetry_export` → `poetry-export`: Now a TypeScript action with extras support, optional dev dependencies, and change detection.
+- `poetry_install` → `poetry-install`: Now a TypeScript action with built-in caching and configurable Poetry version.
+
 ## [v0.4.0] - 2022-12-18
 
 NPM workspaces exist now, which means we can make working with this monorepo of GitHub actions much less unweildy. The problem with that is that the folder structure is different, so those who want to update to the latest version of the previous set of actions will need to update the path in their `uses` declaration.

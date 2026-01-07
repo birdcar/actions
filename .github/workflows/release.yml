@@ -1,18 +1,32 @@
+name: Release
+
 on:
   push:
     tags:
-      - v*
+      - 'v*'
 
 jobs:
-  create_release_from_new_tag:
+  build-and-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v3
-      - name: "Create release from new SemVer tag"
-        uses: birdcar/actions/dev/create_release@main
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build all actions
+        run: bun run build
+
+      - name: Create release from new SemVer tag
+        uses: ./create-release
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           timezone: 'America/Chicago'

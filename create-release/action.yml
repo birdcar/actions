@@ -1,0 +1,26 @@
+name: 'Create Release'
+author: 'Nick Cannariato <devrel@birdcar.dev>'
+description: 'Automatically creates a GitHub release from a new tag, including changelog notes'
+
+inputs:
+  githubToken:
+    required: true
+    description: 'A GitHub Personal Access Token with the appropriate scopes'
+  changelogPath:
+    required: false
+    description: 'Relative path to the changelog file to parse'
+    default: 'CHANGELOG.md'
+  timezone:
+    required: false
+    description: 'An optional Olsen database timezone'
+    default: 'Etc/UTC'
+
+outputs:
+  release_id:
+    description: 'The ID of the created release'
+  release_url:
+    description: 'The URL of the created release'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

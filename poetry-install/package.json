@@ -1,0 +1,18 @@
+{
+  "name": "@birdcar/poetry-install",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "description": "Install and configure Poetry for Python projects",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "bun build src/index.ts --outfile=dist/index.js --target=node --minify",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/cache": "^3.2.4",
+    "@actions/tool-cache": "^2.0.1"
+  }
+}
