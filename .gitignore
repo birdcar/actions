@@ -213,3 +213,14 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,node
 
+### Bun ###
+# Bun binary outputs
+*.exe
+
+### Project ###
+# Compiled action bundles (committed at release time via auto-release workflow)
+*/dist/
+
+# Source maps in dist (optional - uncomment if you want to commit them)
+# */dist/*.map
+

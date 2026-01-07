@@ -1,0 +1,30 @@
+name: 'Deploy to Heroku'
+author: 'Nick Cannariato <devrel@birdcar.dev>'
+description: 'Deploy applications to Heroku using GitHub Actions'
+
+inputs:
+  heroku-username:
+    required: true
+    description: 'The Heroku username for authentication'
+  heroku-api-key:
+    required: true
+    description: 'The Heroku API key for authentication'
+  heroku-app-name:
+    required: true
+    description: 'The name of the Heroku app to deploy to'
+  heartbeat-url:
+    required: false
+    description: 'Optional URL to check for 200 response after deploy'
+    default: ''
+  branch:
+    required: false
+    description: 'The branch to push to on Heroku'
+    default: 'main'
+
+outputs:
+  deploy-url:
+    description: 'The URL of the deployed application'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

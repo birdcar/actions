@@ -1,0 +1,50 @@
+name: 'Auto Release'
+author: 'Nick Cannariato <devrel@birdcar.dev>'
+description: 'Automatically creates a tagged release when a PR is merged, including changelog updates'
+
+inputs:
+  githubToken:
+    required: true
+    description: 'A GitHub Personal Access Token with contents:write permission'
+  changelogPath:
+    required: false
+    description: 'Relative path to the changelog file'
+    default: 'CHANGELOG.md'
+  timezone:
+    required: false
+    description: 'Timezone for date formatting (Olsen database format)'
+    default: 'Etc/UTC'
+  defaultBump:
+    required: false
+    description: 'Default version bump if no label is found (major, minor, patch)'
+    default: 'patch'
+  majorLabels:
+    required: false
+    description: 'Comma-separated list of labels that trigger a major version bump'
+    default: 'major,breaking'
+  minorLabels:
+    required: false
+    description: 'Comma-separated list of labels that trigger a minor version bump'
+    default: 'minor,feature,enhancement'
+  patchLabels:
+    required: false
+    description: 'Comma-separated list of labels that trigger a patch version bump'
+    default: 'patch,fix,bugfix,bug'
+  skipLabels:
+    required: false
+    description: 'Comma-separated list of labels that skip release creation'
+    default: 'skip-release,no-release'
+
+outputs:
+  version:
+    description: 'The new version that was created'
+  tag:
+    description: 'The git tag that was created'
+  release_url:
+    description: 'The URL of the created release'
+  skipped:
+    description: 'Whether the release was skipped'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

@@ -1,0 +1,47 @@
+name: 'Poetry Export'
+author: 'Nick Cannariato <devrel@birdcar.dev>'
+description: 'Generate requirements.txt from poetry.lock and optionally commit it'
+
+inputs:
+  output-file:
+    required: false
+    description: 'Path to the output requirements file'
+    default: 'requirements.txt'
+  extras:
+    required: false
+    description: 'Comma-separated list of extras to include'
+    default: ''
+  without-hashes:
+    required: false
+    description: 'Export without hashes'
+    default: 'false'
+  dev:
+    required: false
+    description: 'Include dev dependencies'
+    default: 'false'
+  commit:
+    required: false
+    description: 'Whether to commit the generated file'
+    default: 'false'
+  git-user-name:
+    required: false
+    description: 'Git user name for commits'
+    default: 'github-actions[bot]'
+  git-user-email:
+    required: false
+    description: 'Git user email for commits'
+    default: 'github-actions[bot]@users.noreply.github.com'
+  commit-message:
+    required: false
+    description: 'Commit message for the generated file'
+    default: 'chore: update requirements.txt from poetry.lock'
+
+outputs:
+  output-path:
+    description: 'Path to the generated requirements file'
+  changed:
+    description: 'Whether the requirements file changed'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

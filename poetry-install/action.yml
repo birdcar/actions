@@ -1,0 +1,41 @@
+name: 'Poetry Install'
+author: 'Nick Cannariato <devrel@birdcar.dev>'
+description: 'Install Poetry and optionally install project dependencies with caching'
+
+inputs:
+  python-version:
+    required: false
+    description: 'Python version to use for Poetry virtualenv'
+    default: '3.11'
+  poetry-version:
+    required: false
+    description: 'Poetry version to install'
+    default: 'latest'
+  install-dependencies:
+    required: false
+    description: 'Whether to run poetry install'
+    default: 'true'
+  install-args:
+    required: false
+    description: 'Additional arguments to pass to poetry install'
+    default: ''
+  cache-dependencies:
+    required: false
+    description: 'Whether to cache Poetry dependencies'
+    default: 'true'
+  working-directory:
+    required: false
+    description: 'Working directory for Poetry commands'
+    default: '.'
+
+outputs:
+  poetry-version:
+    description: 'The installed Poetry version'
+  cache-hit:
+    description: 'Whether the cache was hit'
+  virtualenv-path:
+    description: 'Path to the Poetry virtualenv'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
