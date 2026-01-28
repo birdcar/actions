@@ -127,6 +127,9 @@ export function extractLatestVersion(changelogContent: string): string | null {
 /**
  * Categorize changes from PR body into keep-a-changelog sections
  * Looks for markdown headers or bullet points with conventional prefixes
+ *
+ * Stops parsing at `---` separator (content after is ignored)
+ * Ignores task checkboxes: `- [ ]` and `- [x]`
  */
 export function categorizeChanges(prBody: string | null): Map<string, string[]> {
   const categories = new Map<string, string[]>([
@@ -140,7 +143,10 @@ export function categorizeChanges(prBody: string | null): Map<string, string[]> 
 
   if (!prBody) return categories
 
-  const lines = prBody.split('\n')
+  // Stop at --- separator (ignore test plans, notes, etc.)
+  const relevantContent = prBody.split(/^---\s*$/m)[0]
+
+  const lines = relevantContent.split('\n')
   let currentSection: string | null = null
 
   for (const line of lines) {
@@ -160,6 +166,11 @@ export function categorizeChanges(prBody: string | null): Map<string, string[]> 
     const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/)
     if (bulletMatch) {
       const content = bulletMatch[1]
+
+      // Skip task checkboxes (- [ ] or - [x] items)
+      if (/^\[[ xX]\]/.test(content)) {
+        continue
+      }
 
       // If we're in a section, add to that section
       if (currentSection && categories.has(currentSection)) {
