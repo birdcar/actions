@@ -3,6 +3,8 @@
  * These functions have no side effects and are easily testable.
  */
 
+import { parser, Release, type Changelog } from 'keep-a-changelog'
+
 export type BumpType = 'major' | 'minor' | 'patch'
 
 export interface Version {
@@ -292,4 +294,74 @@ export function getCurrentDate(timezone: string): string {
  */
 export function isPrerelease(tagName: string): boolean {
   return /v?\d+\.\d+\.\d+-\w+/.test(tagName)
+}
+
+/**
+ * Update changelog using keep-a-changelog library
+ * Merges [Unreleased] entries + PR-generated entries into the new version
+ * If version already exists (manual entry), merges with it instead of replacing
+ */
+export function updateChangelog(
+  changelogContent: string,
+  version: string,
+  date: string,
+  prChanges: Map<string, string[]>,
+): string {
+  let changelog: Changelog
+
+  try {
+    changelog = parser(changelogContent)
+  } catch {
+    // If parsing fails, create a new changelog
+    const { Changelog } = require('keep-a-changelog')
+    changelog = new Changelog('Changelog')
+  }
+
+  // Strip 'v' prefix for keep-a-changelog (it uses bare versions)
+  const bareVersion = version.replace(/^v/, '')
+
+  // Check if version already exists (manual entry)
+  let release = changelog.releases.find((r: Release) => r.version?.toString() === bareVersion)
+  const isNewRelease = !release
+
+  if (isNewRelease) {
+    release = new Release(bareVersion, date)
+    changelog.addRelease(release)
+  }
+
+  // Get content from [Unreleased] section and merge
+  const unreleasedIndex = changelog.releases.findIndex((r: Release) => !r.version)
+  if (unreleasedIndex !== -1) {
+    const unreleased = changelog.releases[unreleasedIndex]
+    // Concatenate unreleased entries into the release
+    const changes = unreleased.changes as Map<string, Array<{ title: string }>>
+    for (const [type, items] of changes) {
+      for (const item of items) {
+        const methodName = type.toLowerCase() as 'added' | 'changed' | 'fixed' | 'removed' | 'deprecated' | 'security'
+        if (typeof release[methodName] === 'function') {
+          release[methodName](item.title)
+        }
+      }
+    }
+    // Clear unreleased by replacing with a fresh Release (no version = unreleased)
+    changelog.releases[unreleasedIndex] = new Release()
+  }
+
+  // Add PR-generated entries (concatenate, don't replace)
+  for (const [category, items] of prChanges) {
+    for (const item of items) {
+      const methodName = category.toLowerCase() as 'added' | 'changed' | 'fixed' | 'removed' | 'deprecated' | 'security'
+      if (typeof release[methodName] === 'function') {
+        release[methodName](item)
+      }
+    }
+  }
+
+  // Convert to string and add brackets around versions for compatibility
+  let result = changelog.toString()
+
+  // Add brackets around version numbers in headers: "## 1.0.0" -> "## [1.0.0]"
+  result = result.replace(/^(## )(\d+\.\d+\.\d+(?:-[^\s]+)?)/gm, '$1[$2]')
+
+  return result
 }
