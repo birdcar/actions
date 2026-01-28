@@ -1,140 +1,14 @@
 # Changelog
-
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [v1.0.0] - 2026-01-07
-
-### Added
-
-- `auto-release` action for automatic releases from merged PRs
-- `create-release` action for creating releases from pushed tags
-- `bun run new <name>` - Generator script to scaffold new actions
-- `bun run build` - Build script that compiles all actions
-- `bun run build --compile` - Cross-compile actions to native executables
-- `bun run build --watch` - Watch mode for development
-- CI workflow to validate builds on PRs
-- Auto-release workflow for automatic versioning on PR merge
-- Shared utilities in `shared/action-utils.ts`
-- Shared testing utilities with mock implementations for @actions/* packages
-- TypeScript support throughout with strict type checking
-- Biome for linting and formatting
-- PR template with changelog format guidance
-- Comprehensive AGENTS.md/CLAUDE.md documentation
-
+## [1.0.1] - 2026-01-28
 ### Changed
-
-- **BREAKING**: Actions moved from `dev/` to repository root (e.g., `create-release/` instead of `dev/create_release/` or `actions/create-release/`)
-- **BREAKING**: Action names changed to kebab-case (e.g., `create_release` → `create-release`)
-- Migrated build system from `@vercel/ncc` to Bun's native bundler
-- Upgraded all dependencies to latest versions
-- Actions now target Node 20 (previously Node 16)
-- All actions rewritten in TypeScript with dependency injection for testability
-
-### Removed
-
-- Removed `@birdcar/quick` dependency
-- Removed ESLint configuration (replaced by Biome)
-- Removed old npm-based build tooling
-- Removed shell script implementations
-- [x] Tests pass locally (`bun test`)
-- [x] Build succeeds (`bun run build`)
-- [x] Lint passes (`bun run lint`)
-- `birdcar/actions/dev/create_release@main` → `birdcar/actions/create-release@v1`
-- `birdcar/actions/dev/deploy_to_heroku@main` → `birdcar/actions/deploy-to-heroku@v1`
-- `birdcar/actions/dev/poetry_export@main` → `birdcar/actions/poetry-export@v1`
-- `birdcar/actions/dev/poetry_install@main` → `birdcar/actions/poetry-install@v1`
-
-## [v0.5.0] - 2026-01-07
-
-Major architecture overhaul: migrated from npm workspaces to Bun workspaces with a completely new build system.
-
-### Changed
-
-- **Breaking change**: Actions moved from `dev/` to `actions/` directory. Update your workflow files to use `birdcar/actions/actions/create-release@main` (or the new tag once released).
-- **Breaking change**: `create_release` renamed to `create-release` (kebab-case).
-- Migrated build system from `@vercel/ncc` to Bun's native bundler.
-- Upgraded all dependencies to latest versions.
-- Migrated from ESLint to Biome for linting and formatting.
-- Actions now target Node 20 (previously Node 16).
-
-### Added
-
-- `bun run new <name>` - Generator script to scaffold new actions.
-- `bun run build` - Build script that compiles all actions.
-- `bun run build --compile` - Cross-compile actions to native executables.
-- `bun run build --watch` - Watch mode for development.
-- CI workflow to validate builds on PRs.
-- Shared utilities in `shared/action-utils.ts`.
-- TypeScript support throughout.
-
-### Removed
-
-- Removed `@birdcar/quick` dependency.
-- Removed ESLint configuration.
-
-### Migrated
-
-- `deploy_to_heroku` → `deploy-to-heroku`: Now a TypeScript action with improved error handling and optional heartbeat check.
-- `poetry_export` → `poetry-export`: Now a TypeScript action with extras support, optional dev dependencies, and change detection.
-- `poetry_install` → `poetry-install`: Now a TypeScript action with built-in caching and configurable Poetry version.
-
-## [v0.4.0] - 2022-12-18
-
-NPM workspaces exist now, which means we can make working with this monorepo of GitHub actions much less unweildy. The problem with that is that the folder structure is different, so those who want to update to the latest version of the previous set of actions will need to update the path in their `uses` declaration.
-
-### Changed
-
-- **Breaking change**. Moved folders for all existing actions into the `dev` directory to allow for better monorepo organization by topic. Consumers will need to update their yaml files.
-
-## [v0.3.1] - 2022-12-18
-
-Ran into a snag with the previous release related to a difference between the octokit API and the releases REST API.
-
-### Fixed
-
-- Previously I attempted to create a release with `make_latest`, however it appears that Octokit's createRelease method doesn't currently support that. I'm going to leave it alone for now.
-
-## [v0.3.0] - 2022-12-18
-
-A quick change to the `create_release` function to ensure that it supports prereleases automagically. This will allow you to specify a tag like `v0.3.1-alpha.1` and have that create a GitHub Prerelease, which you can have different actions for if you prefer.
-
-### Changed
-
-- Updated the `create_release` action to support prereleases based on NPMs semver spec.
-
-## [0.2.1] - 2022-04-13
-
-Some days, you realize that you wrote a bunch of stuff and never tested it. This is one of those days.
-
-### Changed
-
-- **Bugfix**: The `poetry_install` action failed to set the poetry env correctly, resulting in an inability to then use that env for commands later. The reason for this is that I was relying on the output from the `setup-python` step to set the poetry envrionment version. However, I've now shifted to just using the same input value that `setup-python` is relying on, making it simpler and less likely to fail (I hope).
-- **Updated Action**: `poetry_install` will now _only_ install and configure Python and Poetry, but will not take the extra step of installing the dependencies itself.
-- **Updated Action**: `poetry_export` once leveraged `poetry_install` as its first step to simplify production deployments to SaaS but combining the install of production dependencies with the requirements.txt output, but that turns out to not be necessary since `poetry export` outputs the production requirements without needing additional configuration. Right now I'm not going to support the `extras` flag which adds value to this action, but I may consider doing that in the future
-
-## [0.2.0] - 2022-04-12
-
-Another day, another release of birdcar/actions.
-
-### Added
-- **New Action**: `poetry_install`. Poetry is a way of managing python packages, and this action automate the setup and caching of Python, Poetry, and the dependencies specified in your `poetry.lock` file.
-- **New Action**: `poetry_export`. A significant amount of both my side projects and the internal tools I develop professionally are deployed on Heroku. At the moment, Heroku requires all Python projects to have a `requirements.txt` file in the root of the project repository for dependencies to be installed (though that looks to be changing with their move to CloudNativeBuildpacks in the near term future 🤞🏽). This action will use Poetry to generate the `requirements.txt` file for you, and then commit it to the repository to ensure that you don't need to manage it.
-
-### Changed
-- **Updated Action**: `deploy_to_heroku`. Initially, the `deploy_to_heroku` action would also checkout the repository for you. This is actually not great for composing actions together; resulting in either duplicate work (i.e. checking the repository out twice) or odd environmental changes. This update will remove the checkout step and leave that up to the consumer.
-
-### Removed
-- **Deleted Action**: `setup_poetry`. As it turns out, the `actions/setup-python` action has built in dependency caching! It needs to be composed with a few other steps to be useful, but the bulk of the work in the `setup_poetry` was manually performing that caching step, so it's no longer needed. Use `poetry_install` moving forward, and see the readme in that directory for usage instructions.
-
-## [0.1.0] - 2022-04-11
-
-First release of my personal actions repository. Read the [Added](#added) section to see the list of actions available in this release, along with a short description. For more information, see the README in each of the action folders.
-
-### Added
-- **New Action**: `create_release`. Have you _also_ written the same "Automatically publish a release when I create a new tag" GitHub action in almost every project you've created? Well now you don't have to! For the low, low price of "being forced to use keepachangelog's Changelog format" you, too can now stop worrying and just use this action.
-- **New Action**: `setup_poetry`. Poetry is a wonderful package.. manager? Orchestrator? Project manager? Whatever it is, it makes working with Python dependencies more like using `npm`, `bundle`, or `cargo`. This action will help you take advantage of that and cache the dependencies as part of your GitHub Actions cache to speed up your test runs.
-- **New Action**: `poetry_requirements`. Use Poetry, but need to generate a `requirements.txt` file for use with Heroku or some other PaaS? `poetry_requirements` will get you sorted
-- **New Action**: `deploy_to_heroku`. Heroku has its own deployment pipeline, but if you want to use GitHub Actions for CI or control the flow inside of GitHub, you're out of luck. Fortunately, this action will allow you to control your Heroku application deployments inside GitHub actions.
+- Replace manual changelog parsing with `keep-a-changelog` SDK
+- Merge `[Unreleased]` entries with PR-generated changes automatically
+- Concatenate entries when version already exists (supports manual pre-entries)
+- Handle all changelog categories (Added, Changed, Fixed, Removed, Deprecated, Security)
+- [x] Unit tests pass (`bun test`)
+- [ ] Integration test with birdhouse repo release
