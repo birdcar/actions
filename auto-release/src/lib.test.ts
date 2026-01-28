@@ -182,6 +182,42 @@ describe('categorizeChanges', () => {
     const categories = categorizeChanges(null)
     expect(categories.get('Added')).toEqual([])
   })
+
+  it('should ignore content after --- separator', () => {
+    const body = `### Added
+- New feature
+
+---
+
+## Test plan
+- [ ] Tests pass
+- [x] Manual verification`
+    const categories = categorizeChanges(body)
+
+    expect(categories.get('Added')).toEqual(['New feature'])
+    // Should not include test plan items
+    expect(categories.get('Changed')).toEqual([])
+  })
+
+  it('should skip task checkbox items', () => {
+    const body = `### Added
+- New feature
+- [ ] Pending task
+- [x] Completed task
+- Another feature`
+    const categories = categorizeChanges(body)
+
+    expect(categories.get('Added')).toEqual(['New feature', 'Another feature'])
+  })
+
+  it('should skip task checkboxes outside of sections', () => {
+    const body = `- Real change
+- [ ] Task item
+- [X] Another task`
+    const categories = categorizeChanges(body)
+
+    expect(categories.get('Changed')).toEqual(['Real change'])
+  })
 })
 
 describe('generateChangelogEntry', () => {
