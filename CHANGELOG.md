@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v1.0.0] - 2026-01-07
+
+### Added
+
+- `auto-release` action for automatic releases from merged PRs
+- `create-release` action for creating releases from pushed tags
+- `bun run new <name>` - Generator script to scaffold new actions
+- `bun run build` - Build script that compiles all actions
+- `bun run build --compile` - Cross-compile actions to native executables
+- `bun run build --watch` - Watch mode for development
+- CI workflow to validate builds on PRs
+- Auto-release workflow for automatic versioning on PR merge
+- Shared utilities in `shared/action-utils.ts`
+- Shared testing utilities with mock implementations for @actions/* packages
+- TypeScript support throughout with strict type checking
+- Biome for linting and formatting
+- PR template with changelog format guidance
+- Comprehensive AGENTS.md/CLAUDE.md documentation
+
+### Changed
+
+- **BREAKING**: Actions moved from `dev/` to repository root (e.g., `create-release/` instead of `dev/create_release/` or `actions/create-release/`)
+- **BREAKING**: Action names changed to kebab-case (e.g., `create_release` → `create-release`)
+- Migrated build system from `@vercel/ncc` to Bun's native bundler
+- Upgraded all dependencies to latest versions
+- Actions now target Node 20 (previously Node 16)
+- All actions rewritten in TypeScript with dependency injection for testability
+
+### Removed
+
+- Removed `@birdcar/quick` dependency
+- Removed ESLint configuration (replaced by Biome)
+- Removed old npm-based build tooling
+- Removed shell script implementations
+- [x] Tests pass locally (`bun test`)
+- [x] Build succeeds (`bun run build`)
+- [x] Lint passes (`bun run lint`)
+- `birdcar/actions/dev/create_release@main` → `birdcar/actions/create-release@v1`
+- `birdcar/actions/dev/deploy_to_heroku@main` → `birdcar/actions/deploy-to-heroku@v1`
+- `birdcar/actions/dev/poetry_export@main` → `birdcar/actions/poetry-export@v1`
+- `birdcar/actions/dev/poetry_install@main` → `birdcar/actions/poetry-install@v1`
+
 ## [v0.5.0] - 2026-01-07
 
 Major architecture overhaul: migrated from npm workspaces to Bun workspaces with a completely new build system.
