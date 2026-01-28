@@ -13,6 +13,7 @@ import {
   parseLabels,
   parseVersion,
   shouldSkipRelease,
+  updateChangelog,
 } from './lib'
 
 describe('parseVersion', () => {
@@ -282,5 +283,119 @@ describe('isPrerelease', () => {
   it('should return false for stable versions', () => {
     expect(isPrerelease('v1.0.0')).toBe(false)
     expect(isPrerelease('1.0.0')).toBe(false)
+  })
+})
+
+describe('updateChangelog', () => {
+  it('should add a new release to the changelog', () => {
+    const changelog = `# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+## [1.0.0] - 2024-01-01
+
+### Added
+
+- Initial release
+`
+    const prChanges = new Map([
+      ['Added', ['New feature X']],
+      ['Fixed', ['Bug Y']],
+    ])
+
+    const result = updateChangelog(changelog, 'v1.1.0', '2024-01-15', prChanges)
+
+    expect(result).toContain('## [1.1.0]')
+    expect(result).toContain('New feature X')
+    expect(result).toContain('Bug Y')
+  })
+
+  it('should merge [Unreleased] entries with PR changes', () => {
+    const changelog = `# Changelog
+
+## [Unreleased]
+
+### Added
+
+- Manual entry from unreleased
+
+## [1.0.0] - 2024-01-01
+
+- Initial release
+`
+    const prChanges = new Map([
+      ['Added', ['PR-generated entry']],
+    ])
+
+    const result = updateChangelog(changelog, 'v1.1.0', '2024-01-15', prChanges)
+
+    // Both entries should be present
+    expect(result).toContain('Manual entry from unreleased')
+    expect(result).toContain('PR-generated entry')
+    // [Unreleased] should be cleared
+    expect(result).not.toMatch(/## \[Unreleased\][\s\S]*Manual entry/)
+  })
+
+  it('should merge with existing version entry (not replace)', () => {
+    const changelog = `# Changelog
+
+## [1.1.0] - 2024-01-15
+
+### Added
+
+- Manual entry already in 1.1.0
+
+## [1.0.0] - 2024-01-01
+
+- Initial release
+`
+    const prChanges = new Map([
+      ['Added', ['Another entry for 1.1.0']],
+    ])
+
+    const result = updateChangelog(changelog, 'v1.1.0', '2024-01-15', prChanges)
+
+    // Both entries should be present in the same version
+    expect(result).toContain('Manual entry already in 1.1.0')
+    expect(result).toContain('Another entry for 1.1.0')
+  })
+
+  it('should handle empty PR changes', () => {
+    const changelog = `# Changelog
+
+## [Unreleased]
+
+### Fixed
+
+- Unreleased fix
+
+## [1.0.0] - 2024-01-01
+
+- Initial release
+`
+    const prChanges = new Map<string, string[]>([
+      ['Added', []],
+      ['Changed', []],
+    ])
+
+    const result = updateChangelog(changelog, 'v1.1.0', '2024-01-15', prChanges)
+
+    // Unreleased entry should still be merged
+    expect(result).toContain('Unreleased fix')
+    expect(result).toContain('## [1.1.0]')
+  })
+
+  it('should create valid changelog from scratch', () => {
+    const changelog = '# Changelog\n\nNo releases yet.\n'
+    const prChanges = new Map([
+      ['Added', ['First feature']],
+    ])
+
+    const result = updateChangelog(changelog, 'v1.0.0', '2024-01-15', prChanges)
+
+    expect(result).toContain('## [1.0.0]')
+    expect(result).toContain('First feature')
   })
 })

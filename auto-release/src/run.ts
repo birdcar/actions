@@ -6,15 +6,15 @@ import {
   type BumpType,
   type PullRequest,
   bumpVersion,
+  categorizeChanges,
   determineBumpType,
   formatVersion,
-  generateChangelogEntry,
   getCurrentDate,
-  insertChangelogEntry,
   isPrerelease,
   parseLabels,
   parseVersion,
   shouldSkipRelease,
+  updateChangelog,
 } from './lib'
 
 export interface ActionInputs {
@@ -294,10 +294,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 `
     }
 
-    // Generate changelog entry
+    // Categorize changes from PR body
+    const prChanges = categorizeChanges(pr.body)
+
+    // If no categorized changes found, use the PR title as the main change
+    let hasChanges = false
+    for (const items of prChanges.values()) {
+      if (items.length > 0) {
+        hasChanges = true
+        break
+      }
+    }
+    if (!hasChanges) {
+      prChanges.get('Changed')?.push(pr.title)
+    }
+
+    // Update changelog (merges [Unreleased] + PR changes)
     const date = getCurrentDate(inputs.timezone)
-    const entry = generateChangelogEntry(pr, newTag, date)
-    const updatedChangelog = insertChangelogEntry(changelog, entry)
+    const updatedChangelog = updateChangelog(changelog, newTag, date, prChanges)
 
     // Write updated changelog
     await deps.writeFile(inputs.changelogPath, updatedChangelog)
@@ -309,8 +323,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     // Create and push tag
     await createTag(deps, newTag, `Release ${newTag}`)
 
-    // Create GitHub release
-    const releaseBody = entry.content
+    // Create GitHub release body from categorized changes
+    const releaseBodySections: string[] = []
+    for (const [section, items] of prChanges) {
+      if (items.length > 0) {
+        releaseBodySections.push(`### ${section}\n`)
+        for (const item of items) {
+          releaseBodySections.push(`- ${item}`)
+        }
+        releaseBodySections.push('')
+      }
+    }
+    const releaseBody = releaseBodySections.join('\n').trim()
+
     const response = await octokit.rest.repos.createRelease({
       owner,
       repo,
