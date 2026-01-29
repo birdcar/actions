@@ -21,19 +21,19 @@ inputs:
   majorLabels:
     required: false
     description: 'Comma-separated list of labels that trigger a major version bump'
-    default: 'major,breaking'
+    default: 'release.major,release.breaking'
   minorLabels:
     required: false
     description: 'Comma-separated list of labels that trigger a minor version bump'
-    default: 'minor,feature,enhancement'
+    default: 'release.minor,release.feature,release.enhancement'
   patchLabels:
     required: false
     description: 'Comma-separated list of labels that trigger a patch version bump'
-    default: 'patch,fix,bugfix,bug'
+    default: 'release.patch,release.fix,release.bugfix,release.bug'
   skipLabels:
     required: false
     description: 'Comma-separated list of labels that skip release creation'
-    default: 'skip-release,no-release'
+    default: 'release.skip,release.docs,release.dependencies,release.ci'
 
 outputs:
   version:
