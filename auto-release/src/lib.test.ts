@@ -361,9 +361,7 @@ All notable changes to this project will be documented in this file.
 
 - Initial release
 `
-    const prChanges = new Map([
-      ['Added', ['PR-generated entry']],
-    ])
+    const prChanges = new Map([['Added', ['PR-generated entry']]])
 
     const result = updateChangelog(changelog, 'v1.1.0', '2024-01-15', prChanges)
 
@@ -387,9 +385,7 @@ All notable changes to this project will be documented in this file.
 
 - Initial release
 `
-    const prChanges = new Map([
-      ['Added', ['Another entry for 1.1.0']],
-    ])
+    const prChanges = new Map([['Added', ['Another entry for 1.1.0']]])
 
     const result = updateChangelog(changelog, 'v1.1.0', '2024-01-15', prChanges)
 
@@ -425,9 +421,7 @@ All notable changes to this project will be documented in this file.
 
   it('should create valid changelog from scratch', () => {
     const changelog = '# Changelog\n\nNo releases yet.\n'
-    const prChanges = new Map([
-      ['Added', ['First feature']],
-    ])
+    const prChanges = new Map([['Added', ['First feature']]])
 
     const result = updateChangelog(changelog, 'v1.0.0', '2024-01-15', prChanges)
 

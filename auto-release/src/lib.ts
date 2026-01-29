@@ -3,7 +3,7 @@
  * These functions have no side effects and are easily testable.
  */
 
-import { parser, Release, type Changelog } from 'keep-a-changelog'
+import { type Changelog, Release, parser } from 'keep-a-changelog'
 
 export type BumpType = 'major' | 'minor' | 'patch'
 
@@ -348,7 +348,13 @@ export function updateChangelog(
     const changes = unreleased.changes as Map<string, Array<{ title: string }>>
     for (const [type, items] of changes) {
       for (const item of items) {
-        const methodName = type.toLowerCase() as 'added' | 'changed' | 'fixed' | 'removed' | 'deprecated' | 'security'
+        const methodName = type.toLowerCase() as
+          | 'added'
+          | 'changed'
+          | 'fixed'
+          | 'removed'
+          | 'deprecated'
+          | 'security'
         if (typeof release[methodName] === 'function') {
           release[methodName](item.title)
         }
@@ -361,7 +367,13 @@ export function updateChangelog(
   // Add PR-generated entries (concatenate, don't replace)
   for (const [category, items] of prChanges) {
     for (const item of items) {
-      const methodName = category.toLowerCase() as 'added' | 'changed' | 'fixed' | 'removed' | 'deprecated' | 'security'
+      const methodName = category.toLowerCase() as
+        | 'added'
+        | 'changed'
+        | 'fixed'
+        | 'removed'
+        | 'deprecated'
+        | 'security'
       if (typeof release[methodName] === 'function') {
         release[methodName](item)
       }
