@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.3] - 2026-01-29
+### Fixed
+- Default label configuration now uses `release.*` prefix convention
+- Labels changed from bare names (e.g., `major`, `minor`) to prefixed names (e.g., `release.major`, `release.minor`)
+
 ## [1.0.2] - 2026-01-28
 ### Changed
 - Stop parsing at `---` separator - content after is ignored (test plans, notes, etc.)
